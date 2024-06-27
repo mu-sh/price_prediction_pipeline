@@ -1,0 +1,18 @@
+Condition
+Processor
+Graphics Processing Type
+Processor Speed
+Series
+Maximum Resolution
+Operating System
+Storage Type
+Seller notes
+Screen Size
+RAM Size
+SSD Capacity
+HDD Capacity
+GPU
+Brand
+Type
+Model
+Features
