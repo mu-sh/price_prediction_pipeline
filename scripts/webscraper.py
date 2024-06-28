@@ -181,13 +181,6 @@ def get_index_data(soup):
     urls = [item.get('href') for item in links]
     return urls
 
-# Function to write product data to a CSV file
-def write_csv(Prod_data, lnln):
-    with open('33EbayProduct.csv', 'a', encoding="utf-8") as csvfile:
-        writer = csv.writer(csvfile)
-        row = [Prod_data['Title'], Prod_data['Original_price'], Prod_data['OrgCurrency'], Prod_data['Starting_bid'], Prod_data['Currency'], Prod_data['Quantity_availability'], Prod_data['Condition'], lnln]
-        writer.writerow(row)
-
 # Function to extract specific data from a file
 def search_nested_classes(file, search_words, lnln):
     with open(file, encoding='utf-8') as f:
@@ -228,6 +221,7 @@ def search_nested_classes(file, search_words, lnln):
         #print(specifics)        
         return specifics
 
+# Function to extract the sold date and item number of a product
 def get_ID_sold_date(url, cookies, search):
     # Send a GET request to the URL
     response = requests.get(url, cookies=cookies)
@@ -269,6 +263,72 @@ def get_ID_sold_date(url, cookies, search):
     df.to_csv(f'csv/SoldDates/{search}_output_SoldDate.csv', index=False)
 
     return df
+
+# Function to load most recent csv file
+def load_most_recent_csv(folder_path):
+    # Get a list of all CSV files in the folder
+    csv_files = glob.glob(os.path.join(folder_path, '*.csv'))
+
+    # Get the most recent CSV file
+    most_recent_file = max(csv_files, key=os.path.getctime)
+
+    # Read the data from the most recent CSV file
+    df = pd.read_csv(most_recent_file)
+
+    # Lowercase the column names
+    df.columns = df.columns.str.lower()
+
+    # Lowercase all entries
+    df = df.applymap(lambda s:s.lower() if type(s) == str else s)
+
+    return df
+
+# Function to merge all csv files into one
+def merge_csv_files(folder_path, output_path):
+    os.chdir(folder_path)
+    all_filenames = [i for i in glob.glob('*.csv')]
+    if not all_filenames:
+        print("all_filenames is empty")
+        return
+    dataframes = []
+    for f in all_filenames:
+        if os.path.getsize(f) > 0:
+            try:
+                print(f"Reading file: {f}")
+                df = pd.read_csv(f, skiprows=1)
+                dataframes.append(df)
+            except pd.errors.EmptyDataError:
+                print(f"File {f} is empty. Skipping...")
+            except Exception as e:
+                print(f"An error occurred: {e}")
+                continue
+    if not dataframes:
+        print("dataframes is empty")
+        return
+    combined_csv = pd.concat(dataframes)
+    os.chdir("..")
+    os.makedirs('complete', exist_ok=True)
+    combined_csv.columns = ['sold_date', 'item_number']
+    combined_csv.to_csv(output_path, index=False, encoding='utf-8-sig')
+    return pd.read_csv(output_path)
+
+# Function to combine and align csv files
+def combine_and_align(folder_path, sold_dates_path, output_path):
+    df = load_most_recent_csv(folder_path)
+    sold_dates_combined = pd.read_csv(sold_dates_path)
+    sold_dates_combined = sold_dates_combined.dropna(how='all')
+    sold_dates_combined.rename(columns={'item_number': 'item number'}, inplace=True)
+    df2 = pd.merge(df, sold_dates_combined, on='item number', how='left')
+    duplicates = df2[df2.duplicated()]
+    print(f'The merged dataframe contains {len(duplicates)} duplicate rows.')
+    df2.drop_duplicates(inplace=True)
+    print(f'The cleaned dataframe contains {len(df2)} rows.')
+    missing_values = df2.isnull().sum()
+    print(missing_values)
+    df2.to_csv(output_path, index=False)
+
+
+
 
 
 # Main function to scrape eBay product data
@@ -389,142 +449,14 @@ rows = []
 main()
 
 
-
-
-# ## Load csv to dataframe
-
-folder_path = 'csv//ProductData'
-
-# Get a list of all CSV files in the folder
-csv_files = glob.glob(os.path.join(folder_path, '*.csv'))
-
-# Get the most recent CSV file
-most_recent_file = max(csv_files, key=os.path.getctime)
-
-# Read the data from the most recent CSV file
-df = pd.read_csv(most_recent_file)
-
-# Lowercase the column names
-df.columns = df.columns.str.lower()
-
-# Lowercase all entries
-df = df.applymap(lambda s:s.lower() if type(s) == str else s)
-
+# Load csv to dataframe
+df = load_most_recent_csv('csv//ProductData')
 print(df)
 
-
-# ## Merge SoldDate csv files
-
-# Merge all csv files into one
-os.chdir("csv//SoldDates")
-extension = 'csv'
-all_filenames = [i for i in glob.glob('*.{}'.format(extension))]
-
-# Check if all_filenames is empty
-if not all_filenames:
-    print("all_filenames is empty")
-
-# Combine all files in the list
-dataframes = []  # List to store DataFrames
-for f in all_filenames:
-    if os.path.getsize(f) > 0:  # Check if file is not empty
-        try:
-            print(f"Reading file: {f}")  # Print file name
-            df = pd.read_csv(f, skiprows=1)  # Read file
-            dataframes.append(df)  # Append DataFrame to list
-        except pandas.errors.EmptyDataError:
-            print(f"File {f} is empty. Skipping...")
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            continue
-
-# Check if dataframes is empty
-if not dataframes:
-    print("dataframes is empty")
-else:
-    combined_csv = pd.concat(dataframes)  # Concatenate all DataFrames
-
-print(f"Current directory before: {os.getcwd()}")
-os.chdir("..")
-print(f"Current directory after: {os.getcwd()}")
-# Ensure the directory exists
-os.makedirs('complete', exist_ok=True)
-
-# Name columns
-combined_csv.columns = ['sold_date', 'item_number']
-
-#export to csv
-combined_csv.to_csv('temp//sold_dates_combined.csv', index=False, encoding='utf-8-sig')
-
-# Read the data from the CSV file
-sold_dates_combined = pd.read_csv('temp//sold_dates_combined.csv')
-
-# Remove empty rows
-sold_dates_combined = sold_dates_combined.dropna(how='all')
-
-# Display the updated DataFrame
+# Merge SoldDate csv files
+sold_dates_combined = merge_csv_files("csv//SoldDates", 'temp//sold_dates_combined.csv')
 print(sold_dates_combined)
 
-
-
-# ## Combine and align csv files
-
-# Align and add combined csv file to the main csv file, by Item Number
-
-# Read the data from the most recent CSV file
-# Set the path to the folder containing the CSV files
-folder_path = 'ProductData'
-
-print(f"Folder path: {folder_path}")
-
-# Get a list of all CSV files in the folder
-csv_files = glob.glob(os.path.join(folder_path, '*.csv'))
-
-print(f"CSV files: {csv_files}")
-
-# Get the most recent CSV file
-most_recent_file = max(csv_files, key=os.path.getctime)
-
-# Read the data from the most recent CSV file
-df = pd.read_csv(most_recent_file)
-
-# Lowercase the column names
-df.columns = df.columns.str.lower()
-
-# Lowercase all entries
-df = df.applymap(lambda s:s.lower() if type(s) == str else s)
-
-#  Rename item_number column to Item Number
-sold_dates_combined.rename(columns={'item_number': 'item number'}, inplace=True)
-
-# Merge the dataframes on the 'item number' column
-df2 = pd.merge(df, sold_dates_combined, on='item number', how='left')
-
-# Write the DataFrame to a CSV file and display it
-df2.to_csv(f'temp//AlignedComplete.csv', index=False)
-
-# Check for duplicate rows in the merged dataframe
-duplicates = df2[df2.duplicated()]
-
-# Print the number of duplicate rows
-print(f'The merged dataframe contains {len(duplicates)} duplicate rows.')
-
-# Remove duplicate rows from the merged dataframe
-df2.drop_duplicates(inplace=True)
-
-# Print the number of rows in the cleaned dataframe
-print(f'The cleaned dataframe contains {len(df2)} rows.')
-
-# Check for missing values in the merged dataframe
-missing_values = df2.isnull().sum()
-
-# Print the number of missing values for each column
-print(missing_values)
-
-# Change directory
-os.chdir("..")
-
-# Write the DataFrame to a CSV file and display it
-df2.to_csv(f'dataset//update//update_pre_clean.csv', index=False)
-
+# Combine and align csv files
+combine_and_align('ProductData', 'temp//sold_dates_combined.csv', 'dataset//update//update_pre_clean.csv')
 
