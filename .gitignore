@@ -2,3 +2,5 @@
 logs/
 dataset/
 models/
+credentials/
+source_csv/
