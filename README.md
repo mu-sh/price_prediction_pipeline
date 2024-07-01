@@ -2,6 +2,8 @@
 
 ## Overview
 `webscraper.py` is a Python script designed to scrape eBay product data using BeautifulSoup. It is intended for educational purposes or to assist in gathering product information where permitted by eBay's terms of service.
+`data_cleanup.py` is then run to clean the resulting scraped data ready for EDA
+ 
 
 ## Features
 - Utilizes BeautifulSoup for parsing HTML.
