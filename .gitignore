@@ -1,6 +1,5 @@
-*.csv
 logs/
 dataset/
 models/
-credentials/
-source_csv/
+awbc.csv
+cookies.json
