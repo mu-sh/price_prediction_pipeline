@@ -1,5 +1,6 @@
 logs/
 dataset/
 models/
+outdated/
 awbc.csv
 cookies.json
