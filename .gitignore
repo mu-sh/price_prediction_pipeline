@@ -2,5 +2,7 @@ logs/
 dataset/
 models/
 outdated/
+csv/
+html_files/
 awbc.csv
 cookies.json

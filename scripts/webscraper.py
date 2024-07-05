@@ -64,7 +64,7 @@ def generate_query_list(file_path, product_filter, exclude_manufacturer):
 # Function to load cookies from a json file
 def load_cookies(file_path):
     # Load cookies from json
-    with open('cookies.json') as f:
+    with open(file_path) as f:
         cookies = json.load(f)
 
     # Make a GET request to fetch the raw HTML content using the cookies provided in the dictionary above
@@ -314,7 +314,7 @@ def combine_and_align(folder_path, sold_dates_path):
 def main(query_list_source="source_csv//awbc.csv" , product_type="LAPTOP", exclude_brand="APPLE", num_queries=None, num_results=None, num_products=None, randomize_queries=True, query_fraction=None):
 
     # Load cookies from a json file
-    cookies = load_cookies('cookies.json')
+    cookies = load_cookies('credentials//cookies.json')
 
     # Start timer to measure the time taken to scrape the data
     start_time = time.time()

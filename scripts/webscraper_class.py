@@ -31,12 +31,14 @@ class WebScraper:
         self.exclude_brand = exclude_brand
 
     # Function to generate list of models to scrape for a given product type
-    def generate_query_list(self):
+    def generate_query_list(self, query_list_source, product_type, exclude_brand):
         # Read the CSV file into a Pandas DataFrame
-        df = pd.read_csv(self.file_path)
+        df = pd.read_csv(query_list_source)
 
         # Designate Product Type to filter
         filter = self.product_type
+
+        print(f'Filtering for {filter}...')
 
         # Drop rows that do not contain the filter in the 'Product Type' column
         df = df[df['ProductType'].str.contains(filter, na=False)]
@@ -84,7 +86,7 @@ class WebScraper:
         return cookies     
 
     # Function to get the BeautifulSoup object for a given URL
-    def get_page(self):
+    def get_page(self, url):
         response = requests.get(self.url)
         soup = BeautifulSoup(response.text, 'lxml')
         if not response.ok:
@@ -202,12 +204,23 @@ class WebScraper:
         for product in products:
             # Extract the sold date and item number
             try:
-                sold_date = product.find('div', {'class': 's-item__title--tag'}).find('span').text.split('Sold ')[1] 
-            except:
+                sold_date_tag = product.find('div', {'class': 's-item__caption'})
+                print(sold_date_tag)
+                if sold_date_tag:
+                    sold_date = sold_date_tag.find('span').text.split('Sold ')[1]
+                else:
+                    sold_date = ''
+            except Exception as e:
+                print(f"Error extracting sold date: {e}")
                 sold_date = ''
             try:
-                item_number = product.find('span', {'class': 's-item__item-id'}).text.split(': ')[1]
-            except:
+                item_number_tag = product.find('span', {'class': 's-item__item-id s-item__itemID'})
+                if item_number_tag:
+                    item_number = item_number_tag.text.split(': ')[1]
+                else:
+                    item_number = ''
+            except Exception as e:
+                print(f"Error extracting item number: {e}")
                 item_number = ''
 
             # Append the data to the list
@@ -219,8 +232,8 @@ class WebScraper:
         # Convert the 'Sold Date' column to a datetime format
         try:
             df['sold_date'] = pd.to_datetime(df['sold_date'])
-        except:
-            pass
+        except Exception as e:
+            print(f"Error converting sold date to datetime: {e}")
         
         # Check if folder exists, if not, create it
         folder = 'csv/SoldDates'
@@ -398,7 +411,7 @@ class WebScraper:
             df = pd.DataFrame(rows)
             
             # Check if the columns exist in the DataFrame before selecting them
-            cols = ['Price' , 'Item Number', 'Brand','Model', 'Series','Condition', 'Processor'
+            cols = ['Price', 'Item Number', 'Brand','Model', 'Series','Condition', 'Processor'
                     ,'Processor Speed','RAM Size','GPU','Type', 'Graphics Processing Type','Operating System', 'Storage Type',
                     'Screen Size','Features', 'Seller notes', 'Title', 'Link']
             for col in ['Maximum Resolution', 'HDD Capacity', 'SSD Capacity']:
@@ -429,26 +442,26 @@ class WebScraper:
             print(f'Estimated time remaining: {time_remaining}')
 
         # Load csv to dataframe
-        df = self.load_most_recent_csv('csv//ProductData')
-        print(df)
+        #df = self.load_most_recent_csv('csv//ProductData')
+        #print(df)
 
         # Merge SoldDate csv files
-        sold_dates_combined = self.merge_csv_files("csv//SoldDates", 'temp//sold_dates_combined.csv')
-        print(sold_dates_combined)
+        #sold_dates_combined = self.merge_csv_files("csv//SoldDates", 'temp//sold_dates_combined.csv')
+       # print(sold_dates_combined)
 
         # Combine and align csv files
-        self.combine_and_align('ProductData', 'temp//sold_dates_combined.csv', 'dataset//update//update_pre_clean.csv')
+       # self.combine_and_align('ProductData', 'temp//sold_dates_combined.csv', 'dataset//update//update_pre_clean.csv')
 
 
 if __name__ == "__main__":
-    scraper = WebScraper()
+    scraper = WebScraper(product_type='LAPTOP', exclude_brand='APPLE')
     scraper.run(
         query_list_source="source_csv//products.csv",
-        num_queries=10,
-        num_results=100,
-        num_products=50,
-        randomize_queries=True,
-        query_fraction=0.1
+        num_queries=None,
+        num_results=None,
+        num_products=None,
+        randomize_queries=False,
+        query_fraction=None
     )
 
 
