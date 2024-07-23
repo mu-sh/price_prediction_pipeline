@@ -24,6 +24,7 @@ print(df['ProductType'].unique())
 print(df['ProductType'].value_counts())
 
 
+
 # Set loop to save each product type to a new df 
 for product in df['ProductType']:
     
@@ -34,7 +35,7 @@ for product in df['ProductType']:
     num_queries=None,
     num_results=None,
     num_products=None,
-    randomize_queries=False,
+    randomize_queries=True,
     query_fraction=None,
     )
 

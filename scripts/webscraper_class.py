@@ -213,7 +213,22 @@ class WebScraper:
                 else:
                     sold_date = ''
             except Exception as e:
+                error = f"Error extracting sold date: {e}"
                 print(f"Error extracting sold date: {e}")
+
+                # Save product data to a html file
+                filename = f'debugging_html/{search}_{error}.html'
+
+                # save the HTML content of the product page to a file
+                folder = os.path.dirname(filename)
+                # Check if the folder exists, if not, create it
+                if not os.path.exists(folder):
+                    os.makedirs(folder)
+                with open(filename,
+                            'w', encoding='utf-8') as f:
+                        f.write(product.prettify())
+                print(f'Saved {filename}')
+
                 sold_date = ''
             try:
                 item_number_tag = product.find('span', {'class': 's-item__item-id s-item__itemID'})

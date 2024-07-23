@@ -1,5 +1,6 @@
 logs/
 _pycache_/
+debugging_html/
 dataset/
 models/
 outdated/
