@@ -24,11 +24,13 @@ class WebScraper:
                  url='https://www.ebay.co.uk/sch/i.html?_fsrp=1&_from=R40&_nkw=laptop+computer&_sacat=0&_sop=12&LH_PrefLoc=2&_oaa=1&_dcat=177&LH_BIN=1&LH_Sold=1&LH_Complete=1&rt=nc&LH_ItemCondition=1500%7C2010%7C2020%7C2030%7C3000%7C1000', 
                  file_path=None, 
                  product_type=None, 
-                 exclude_brand=None):
+                 exclude_brand=None,
+                 extra_search_params=None):
         self.url = url
         self.file_path = file_path
         self.product_type = product_type
         self.exclude_brand = exclude_brand
+        self.extra_search_params = extra_search_params
 
     # Function to generate list of models to scrape for a given product type
     def generate_query_list(self, query_list_source, product_type, exclude_brand):
@@ -345,7 +347,10 @@ class WebScraper:
 
         for query in tqdm(queries_to_scrape, desc="Processing queries", unit="query"):
             # Set the search term and the URL for buy it now listings
-            search = f'{query}+laptop+computer'
+            search_terms = [query]
+            if self.extra_search_params:
+                search_terms.append(self.extra_search_params)
+            search = '+'.join(search_terms)
             sold_url = f'https://www.ebay.co.uk/sch/i.html?_fsrp=1&_from=R40&_nkw={search}&_sacat=0&_sop=12&LH_PrefLoc=2&_oaa=1&_dcat=177&LH_BIN=1&LH_Sold=1&LH_Complete=1&rt=nc&LH_ItemCondition=1500%7C2010%7C2020%7C2030%7C3000%7C1000'
             url = sold_url
 
