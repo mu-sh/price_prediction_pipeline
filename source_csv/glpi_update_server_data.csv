@@ -1,0 +1,260 @@
+Manufacturer;Model;Status
+Dell;Oemr Xl R640;Sell
+Dell;PowerEdge Fc630;Sell
+Dell;PowerEdge Fx2S;Sell
+Dell;PowerEdge M1000E;Scrap
+Dell;PowerEdge M520 (Vrtx);Scrap
+Dell;PowerEdge M620 (Vrtx);Scrap
+Dell;PowerEdge M620 Blade;Scrap
+Dell;PowerEdge M630;Sell
+Dell;PowerEdge M630 (Vrtx);Sell
+Dell;PowerEdge M640;Sell
+Dell;PowerEdge R210 Ii;Scrap
+Dell;PowerEdge R220;Scrap
+Dell;PowerEdge R230;Sell
+Dell;PowerEdge R240;Sell
+Dell;PowerEdge R320;Scrap
+Dell;PowerEdge R330;Sell
+Dell;PowerEdge R340;Sell
+Dell;PowerEdge R350;Sell
+Dell;PowerEdge R415;Scrap
+Dell;PowerEdge R420;Scrap
+Dell;PowerEdge R430;Sell
+Dell;PowerEdge R440;Sell
+Dell;PowerEdge R510;Scrap
+Dell;PowerEdge R515;Scrap
+Dell;PowerEdge R520;Scrap
+Dell;PowerEdge R530;Sell
+Dell;PowerEdge R610;Scrap
+Dell;PowerEdge R620;Scrap
+Dell;PowerEdge R630;Sell
+Dell;PowerEdge R640;Sell
+Dell;PowerEdge R710;Scrap
+Dell;PowerEdge R715;Scrap
+Dell;PowerEdge R720;Scrap
+Dell;PowerEdge R720Xd;Scrap
+Dell;PowerEdge R730;Sell
+Dell;PowerEdge R730Xd;Sell
+Dell;PowerEdge R740;Sell
+Dell;PowerEdge R740Xd;Sell
+Dell;PowerEdge R750;Sell
+Dell;PowerEdge R7515;Scrap
+Dell;PowerEdge R815;Scrap
+Dell;PowerEdge R820;Scrap
+Dell;PowerEdge R930;Sell
+Dell;PowerEdge T110;Scrap
+Dell;PowerEdge T110 Ii;Scrap
+Dell;PowerEdge T130;Sell
+Dell;PowerEdge T140;Sell
+Dell;PowerEdge T20;Scrap
+Dell;PowerEdge T310;Scrap
+Dell;PowerEdge T320;Scrap
+Dell;PowerEdge T330;Sell
+Dell;PowerEdge T340;Sell
+Dell;PowerEdge T420;Scrap
+Dell;PowerEdge T430;Sell
+Dell;PowerEdge T430 Dbe;Sell
+Dell;PowerEdge T440;Sell
+Dell;PowerEdge T610;Scrap
+Dell;PowerEdge T620;Scrap
+Dell;PowerEdge T630;Sell
+Dell;PowerEdge T640;Sell
+Dell;PowerEdge T710;Scrap
+Dell;PowerEdge Vrtx;Sell
+Dell;PowerEdge Xr2;Sell
+Dell;Powervault Nx3000;Sell
+Dell;Powervault Nx3200;Sell
+Dell;PowerEdge C6300 Enclosure;Sell
+Dell;PowerEdge C6320;Sell
+Dell;Presicion 3930 Rack;Scrap
+Dell;Presicion 5820;Scrap
+Dell;Presicion R5400;Scrap
+Dell;Presicion Rack 7910;Scrap
+Dell;Presicion T1500;Scrap
+Dell;Presicion T1600;Scrap
+Dell;Presicion T1650;Scrap
+Dell;Presicion T1700;Scrap
+Dell;Presicion T320;Scrap
+Dell;Presicion T3420;Scrap
+Dell;Presicion T3500;Scrap
+Dell;Presicion T3510;Scrap
+Dell;Presicion T3600;Scrap
+Dell;Presicion T3610;Scrap
+Dell;Presicion T3620;Scrap
+Dell;Presicion T5500;Sell
+Dell;Presicion T5600;Sell
+Dell;Presicion T5610;Sell
+Dell;Presicion T5810;Sell
+Dell;Presicion T5820;Sell
+Dell;Presicion T7500;Sell
+Dell;Presicion T7600;Sell
+Dell;Presicion T7610;Sell
+Dell;Presicion T7810;Sell
+Dell;Presicion T7910;Sell
+Dell;Sc120;Scrap
+Dell;Storage Nx3230;Sell
+Apple;Xserve;Scrap
+Colfax;Lwf1208Yr915002;Sell
+Datto;S3P4000;Sell
+Dell;C6300;Scrap
+Dell;C6320;Scrap
+Dell;Dl120;Sell
+Dell;M520;Scrap
+Dell;M610;Scrap
+Dell;M620;Scrap
+Dell;M630;Sell
+Dell;M640;Scrap
+Dell;M710;Scrap
+Dell;M830;Scrap
+Dell;P2;Scrap
+Dell;PowerEdge M630;Scrap
+Dell;PowerEdge R330;Scrap
+Dell;PowerEdge R430;Scrap
+Dell;PowerEdge R530;Scrap
+Dell;PowerEdge R630;Scrap
+Dell;PowerEdge R730;Scrap
+Dell;PowerEdge T130;Scrap
+Dell;PowerEdge T330;Scrap
+Dell;PowerEdge T630;Scrap
+Dell;PowerEdge Vrtx;Scrap
+Dell;R210;Scrap
+Dell;R220;Scrap
+Dell;R230;Sell
+Dell;R240;Sell
+Dell;R250;Sell
+Dell;R310;Scrap
+Dell;R320;Scrap
+Dell;R330;Sell
+Dell;R340;Sell
+Dell;R350;Sell
+Dell;R420;Scrap
+Dell;R430;Sell
+Dell;R440;Sell
+Dell;R510;Scrap
+Dell;R520;Scrap
+Dell;R540;Sell
+Dell;R610;Scrap
+Dell;R620;Scrap
+Dell;R630;Sell
+Dell;R640;Sell
+Dell;R6515;Scrap
+Dell;R6525;Scrap
+Dell;R710;Scrap
+Dell;R720;Scrap
+Dell;R730;Sell
+Dell;R740;Sell
+Dell;R7910;Sell
+Dell;T110;Scrap
+Dell;T130;Sell
+Dell;T140;Sell
+Dell;T150;Sell
+Dell;T30;Sell
+Dell;T310;Scrap
+Dell;T320;Scrap
+Dell;T330;Sell
+Dell;T340;Sell
+Dell;T40;Sell
+Dell;T410;Scrap
+Dell;T420;Scrap
+Dell;T430;Sell
+Dell;T440;Sell
+Dell;T550;Sell
+Dell;T610;Scrap
+Dell;T620;Scrap
+Dell;T630;Sell
+Dell;T640;Sell
+Dell;T710;Scrap
+Dell;X16;Scrap
+Dell;X3353;Scrap
+Dell;X3460;Scrap
+Dell;X4;Scrap
+Dell;X5;Scrap
+Dell;X5620;Scrap
+Dell;X5667;Scrap
+Dell;X5672;Scrap
+Dell;X8;Scrap
+Hp;Bl2;Scrap
+Hp;Bl420;Scrap
+Hp;Bl460;Sell
+Hp;Bl465;Scrap
+Hp;Bl490;Scrap
+Hp;Bl660;Scrap
+Hp;D1;Scrap
+Hp;D2200;Scrap
+Hp;D2220;Scrap
+Hp;Dl160;Sell
+Hp;Dl20;Sell
+Hp;Dl320;Scrap
+Hp;Dl360;Sell
+Hp;Dl380;Sell
+Hp;Dl560;Scrap
+Hp;Dl580;Scrap
+Hp;Dl60;Scrap
+Hp;G1610;Scrap
+Hp;M6710;Scrap
+Hp;Ml10;Scrap
+Hp;Ml110;Scrap
+Hp;Ml150;Scrap
+Hp;Ml30;Scrap
+Hp;Ml310;Scrap
+Hp;Ml350;Scrap
+Hp;P44718;Scrap
+Hp;P54644;Scrap
+Hp;P9;Scrap
+Hp;Proliant Dl20 Gen 9;Sell
+Hp;Proliant Dl360 Gen 9;Scrap
+Hp;Proliant Dl380 Gen10;Scrap
+Hp;Proliant Dl380 Gen9;Sell
+Hp;Proliant Dl380E Gen 8;Scrap
+Hp;Proliant Ml350 Gen 9;Scrap
+Hp;X146;Scrap
+Hp;X3;Scrap
+Hp;X3216;Sell
+Hp;X4;Scrap
+Ibm;Power System S822;Scrap
+Ibm;Ts2900;Scrap
+Ibm;X3550;Scrap
+Ibm;X3650;Scrap
+Ibm;X4;Scrap
+Ibm;X8;Scrap
+Lenovo;M82;Scrap
+Lenovo;P330;Sell
+Lenovo;System X 3550 M5;Sell
+Lenovo;System X3650 M3;Scrap
+Lenovo;T420;Scrap
+Lenovo;T470;Scrap
+Lenovo;Thinksystem Sr630;Sell
+Lenovo;Ts460;Sell
+Lenovo;X16;Scrap
+Lenovo;X3550;Scrap
+Lenovo;X3650;Sell
+Lenovo;X3750;Scrap
+Lenovo;X3850;Scrap
+Oracle;X4270;Scrap
+Quanta;D51B-2U;Scrap
+Quanta;D51Pc-1U;Scrap
+Quanta;T41S-2U;Sell
+Quanta;T42;Scrap
+Quanta;X1;Scrap
+Supermicro;Cse-113;Scrap
+Supermicro;Cse-116;Scrap
+Supermicro;Cse-118;Scrap
+Supermicro;Cse-216;Scrap
+Supermicro;Cse-418;Scrap
+Supermicro;Cse-504;Scrap
+Supermicro;Cse-512;Scrap
+Supermicro;Cse-512-350;Sell
+Supermicro;Cse-731;Scrap
+Supermicro;Cse-811;Scrap
+Supermicro;Cse-813;Scrap
+Supermicro;Cse-813M;Scrap
+Supermicro;Cse-815;Scrap
+Supermicro;Cse-819U;Sell
+Supermicro;Cse-825;Scrap
+Supermicro;Cse-826;Scrap
+Supermicro;Cse-827;Scrap
+Supermicro;Cse-829;Sell
+Supermicro;Cse-836;Scrap
+Supermicro;Cse-846;Scrap
+Supermicro;Cse-847;Scrap
+Supermicro;Cse826;Scrap

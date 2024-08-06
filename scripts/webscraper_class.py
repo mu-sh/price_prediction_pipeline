@@ -14,26 +14,49 @@ import random
 import cProfile
 import pandas.errors
 import json
+import sys
 from tqdm import tqdm
 from requests.exceptions import RequestException
 
 
-# # Define the WebScraper class
+# Function to select category ID for a given product type
+def get_ebay_category_id(product_type_input):
+    # Load category_ids from JSON file
+    with open('credentials//eBay_categories_UK.json', 'r') as f:
+        category_ids = json.load(f)
+    
+    # Load product_types from JSON file
+    with open('credentials//product_types.json', 'r') as f:
+        product_types = json.load(f)
+    
+    # Find and return the eBay category ID
+    return next((category_ids[key] for key, value in product_types.items() if value and product_type_input in value.split('|')), None)
+
+
+# Define the WebScraper class
 class WebScraper:
     def __init__(self, 
-                 url='https://www.ebay.co.uk/sch/i.html?_fsrp=1&_from=R40&_nkw=laptop+computer&_sacat=0&_sop=12&LH_PrefLoc=2&_oaa=1&_dcat=177&LH_BIN=1&LH_Sold=1&LH_Complete=1&rt=nc&LH_ItemCondition=1500%7C2010%7C2020%7C2030%7C3000%7C1000', 
+                 url='https://www.ebay.co.uk/sch/i.html?_fsrp=1&_from=R40&_nkw={product_type}&_sacat=0&_sop=12&LH_PrefLoc=2&_oaa=1&_dcat={dcat}&LH_BIN=1&LH_Sold=1&LH_Complete=1&rt=nc&LH_ItemCondition=1500%7C2010%7C2020%7C2030%7C3000%7C1000', 
                  file_path=None, 
-                 product_type=None, 
-                 exclude_brand=None,
+                 product_type=None,
                  extra_search_params=None):
-        self.url = url
         self.file_path = file_path
         self.product_type = product_type
-        self.exclude_brand = exclude_brand
         self.extra_search_params = extra_search_params
+        self.session = requests.Session()   # Create a session object to persist cookies across requests
+        
+        # Get the eBay category ID
+        dcat = get_ebay_category_id(product_type) if product_type else '0'
+        
+        # Format the URL with the dcat value and product type
+        self.url = url.format(product_type=product_type, dcat=dcat)
+
+        print(f"Initialized URL: {self.url}")
+
+        #sys.exit()
 
     # Function to generate list of models to scrape for a given product type
-    def generate_query_list(self, query_list_source, product_type, exclude_brand):
+    def generate_query_list(self, query_list_source, product_type):
         # Read the CSV file into a Pandas DataFrame
         df = pd.read_csv(query_list_source)
 
@@ -52,13 +75,10 @@ class WebScraper:
         model_list = df['Model'].unique().tolist()
 
         # Add the 'Manufacturer' entry to the beginning of each string in the list
-        manufacturer_model_list = [df.loc[df['Model'] == model, 'Manufacturer'].fillna('').iloc[0] + ' ' + model for model in model_list if self.exclude_brand not in model]
-
-        # Remove any string that contains the word of the excluded manufacturer
-        query_list = [string for string in manufacturer_model_list if self.exclude_brand not in string]
+        manufacturer_model_list = [df.loc[df['Model'] == model, 'Manufacturer'].fillna('').iloc[0] + ' ' + model for model in model_list]
 
         # Lowercase all strings in the list
-        query_list = [string.lower() for string in query_list]
+        query_list = [string.lower() for string in manufacturer_model_list]
 
         # Replace any spaces in the strings with a plus sign
         query_list = [string.replace(' ', '+') for string in query_list]
@@ -71,25 +91,31 @@ class WebScraper:
         with open(file_path) as f:
             cookies = json.load(f)
 
-        # Make a GET request to fetch the raw HTML content using the cookies provided in the dictionary above
-        html_content = requests.get(self.url, cookies=cookies)
+        # Update the session with the loaded cookies
+        for name, value in cookies.items():
+            self.session.cookies.set(name, value)
 
-        for cookie in html_content.cookies:
+        # Make a GET request to fetch the raw HTML content using the session with cookies
+        response = self.session.get(self.url)
+        if not response.ok:
+            print('Server responded:', response.status_code)
+            return None
+
+        for cookie in self.session.cookies:
             print('cookie domain = ' + cookie.domain)
             print('cookie name = ' + cookie.name)
             print('cookie value = ' + cookie.value)
             print('*************************************')
 
-        html_content = requests.get(self.url, cookies=cookies).text
         # Parse the html content
-        soup = BeautifulSoup(html_content, "lxml")
+        soup = BeautifulSoup(response.text, "lxml")
         print(soup.prettify()) # print the parsed data of html
 
-        return cookies     
+        return cookies   
 
     # Function to get the BeautifulSoup object for a given URL
     def get_page(self, url):
-        response = requests.get(self.url)
+        response = self.session.get(url)
         soup = BeautifulSoup(response.text, 'lxml')
         if not response.ok:
             print('Server responded:', response.status_code)
@@ -186,12 +212,13 @@ class WebScraper:
                         next_class = nested_classes[i+1]
                         specifics[word] = next_class.text
                         break
+            print(specifics)        
             return specifics
 
     # Function to extract the sold date and item number of a product
-    def get_ID_sold_date(self, url, cookies, search):
+    def get_ID_sold_date(self, url, search):
         # Send a GET request to the URL
-        response = requests.get(url, cookies=cookies)
+        response = self.session.get(url)
 
         # Parse the HTML content of the page using BeautifulSoup
         soup = BeautifulSoup(response.content, 'html.parser')
@@ -257,8 +284,13 @@ class WebScraper:
         if not os.path.exists(folder):
             os.makedirs(folder)    
 
+        print(df.value_counts())
+
+       # Sanitize the search string to remove any invalid characters
+        sanitized_search = re.sub(r'[<>:"/\\|?*]', '_', search)
+
         # Write the DataFrame to a CSV file
-        df.to_csv(f'csv/SoldDates/{search}_output_SoldDate.csv', index=False)
+        df.to_csv(f'{folder}/{sanitized_search}_output_SoldDate.csv', index=False)
 
         return df
 
@@ -328,8 +360,10 @@ class WebScraper:
         df2.to_csv(f"{folder}/update_pre_clean.csv", index=False)
 
 
+
+
     # Main function to scrape eBay product data
-    def run(self, query_list_source, num_queries=None, num_results=None, num_products=None, randomize_queries=True, query_fraction=None):
+    def run(self, query_list_source, num_queries=None, num_results=None, num_products=None, randomize_queries=True, query_fraction=None, catID=None):
 
         # Load cookies from a json file
         cookies = self.load_cookies('credentials//cookies.json')
@@ -337,7 +371,7 @@ class WebScraper:
         # Start timer to measure the time taken to scrape the data
         start_time = time.time()
 
-        query_list = self.generate_query_list(query_list_source, self.product_type, self.exclude_brand)
+        query_list = self.generate_query_list(query_list_source, self.product_type)
         print(len(query_list))
 
         # Initialize query list
@@ -359,6 +393,8 @@ class WebScraper:
         # Initialize rows list outside the loop
         rows = []
 
+        # Select catID
+        catID = get_ebay_category_id(self.product_type)
 
         for query in tqdm(queries_to_scrape, desc="Processing queries", unit="query"):
             # Set the search term and the URL for buy it now listings
@@ -366,7 +402,9 @@ class WebScraper:
             if self.extra_search_params:
                 search_terms.append(self.extra_search_params)
             search = '+'.join(search_terms)
-            sold_url = f'https://www.ebay.co.uk/sch/i.html?_fsrp=1&_from=R40&_nkw={search}&_sacat=0&_sop=12&LH_PrefLoc=2&_oaa=1&_dcat=177&LH_BIN=1&LH_Sold=1&LH_Complete=1&rt=nc&LH_ItemCondition=1500%7C2010%7C2020%7C2030%7C3000%7C1000'
+            print(search)
+            sold_url = f'https://www.ebay.co.uk/sch/i.html?_fsrp=1&_from=R40&_nkw={search}&_sacat=0&_sop=12&LH_PrefLoc=2&_oaa=1&_dcat={catID}&LH_BIN=1&LH_Sold=1&LH_Complete=1&rt=nc&LH_ItemCondition=1500%7C2010%7C2020%7C2030%7C3000%7C1000'
+            print(sold_url)
             url = sold_url
 
             # Read the list of search words from a text file
@@ -389,7 +427,7 @@ class WebScraper:
                 for lnln in tqdm(products_to_process, desc="Processing products", unit="product"):
 
                     # Get the ID and sold date of the product
-                    self.get_ID_sold_date(url + '&_pgn={}'.format(page), cookies, search)
+                    self.get_ID_sold_date(url + '&_pgn={}'.format(page), search)
 
 
                     # Save the HTML content of the product page to a file
@@ -398,7 +436,7 @@ class WebScraper:
                     # Check if the folder exists, if not, create it
                     if not os.path.exists(folder):
                         os.makedirs(folder)
-                    response = requests.get(lnln)
+                    response = self.session.get(lnln)
                     if response.ok:
                         with open(filename, 'w', encoding='utf-8') as f:
                             f.write(response.text)
@@ -430,23 +468,31 @@ class WebScraper:
             # Create a pandas DataFrame from the list of rows
             df = pd.DataFrame(rows)
             
-            # Check if the columns exist in the DataFrame before selecting them
-            cols = ['Price', 'Item Number', 'Brand','Model', 'Series','Condition', 'Processor'
-                    ,'Processor Speed','RAM Size','GPU','Type', 'Graphics Processing Type','Operating System', 'Storage Type',
-                    'Screen Size','Features', 'Seller notes', 'Title', 'Link']
-            for col in ['Maximum Resolution', 'HDD Capacity', 'SSD Capacity']:
-                if col in df.columns:
-                    cols.append(col)
-            df = df[cols]
-            
+            # If scraping enterprise do not apply column checks
+            if self.product_type in ['LAPTOP', 'DESKTOP', 'TABLET PC', 'TABLET', 'SMARTPHONE', 'ALL IN ONE', 'WORKSTATION']:                # Check if the columns exist in the DataFrame before selecting them
+                cols = ['Price', 'Item Number', 'Brand','Model', 'Series','Condition', 'Processor'
+                        ,'Processor Speed','RAM Size','GPU','Type', 'Graphics Processing Type','Operating System', 'Storage Type',
+                        'Screen Size','Features', 'Seller notes', 'Title', 'Link']
+                for col in ['Maximum Resolution', 'HDD Capacity', 'SSD Capacity']:
+                    if col in df.columns:
+                        cols.append(col)
+                df = df[cols]
+            else:
+                df = df    
+
 
             # Check if folder exists, if not, create it
             folder = 'csv/ProductData'
             if not os.path.exists(folder):
                 os.makedirs(folder)
 
+            print(df.value_counts())
+
+            # Sanitize the search string to remove any invalid characters
+            sanitized_search = re.sub(r'[<>:"/\\|?*]', '_', search)
+
             # Write the DataFrame to a CSV file and display it
-            df.to_csv(f'csv/ProductData/{search}_output_.csv', index=False)
+            df.to_csv(f'csv/ProductData/{sanitized_search}_output_.csv', index=False)
             #display(df)
             
             print(f'{query} Scraped Successfully')
@@ -462,19 +508,21 @@ class WebScraper:
             print(f'Estimated time remaining: {time_remaining}')
 
         # Load csv to dataframe
-        #df = self.load_most_recent_csv('csv//ProductData')
-        #print(df)
+        df = self.load_most_recent_csv('csv//ProductData')
+        print(df)
 
         # Merge SoldDate csv files
-        #sold_dates_combined = self.merge_csv_files("csv//SoldDates", 'temp//sold_dates_combined.csv')
-       # print(sold_dates_combined)
+        sold_dates_combined = self.merge_csv_files("csv//SoldDates", 'temp//sold_dates_combined.csv')
+        print(sold_dates_combined)
 
         # Combine and align csv files
-       # self.combine_and_align('ProductData', 'temp//sold_dates_combined.csv', 'dataset//update//update_pre_clean.csv')
+        self.combine_and_align('csv//ProductData', 'temp//sold_dates_combined.csv')
 
 
 if __name__ == "__main__":
-    scraper = WebScraper(product_type='LAPTOP', exclude_brand='APPLE')
+    '''
+    scraper = WebScraper(product_type='LAPTOP')
+    
     scraper.run(
         query_list_source="source_csv//products.csv",
         num_queries=None,
@@ -483,6 +531,9 @@ if __name__ == "__main__":
         randomize_queries=False,
         query_fraction=None
     )
+
+    scraper.select_category_id(product_type='LAPTOP')
+    '''
 
 
 
