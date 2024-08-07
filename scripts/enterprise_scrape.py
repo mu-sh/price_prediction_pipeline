@@ -6,7 +6,7 @@ from webscraper_class import WebScraper
 import pandas as pd
 
 # Create a new WebScraper object
-scraper = WebScraper(product_type='switch', extra_search_params=None)
+scraper = WebScraper(product_type='ap', extra_search_params=None)
 scraper.run(
 query_list_source="source_csv/merged_inventory.csv",
 num_queries=None,
