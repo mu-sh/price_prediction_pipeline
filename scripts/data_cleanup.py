@@ -1,4 +1,9 @@
+"""
+This script performs data cleaning on a scraped dataset. It removes duplicate rows, drops rows with missing 'Price' values, removes job lot listings, removes faulty listings, removes spares listings, removes listings with 'any', 'various', or 'depends on stock' in the 'model' column, removes rows with '/' in the 'brand' or 'model' column, removes entries with conditions other than 'Good', 'Used', 'New', 'Excellent', or 'Refurbished', splits the 'Processor' column into 'Processor i series' and 'Processor generation' columns, removes 'GHz' suffix from 'Processor Speed', drops multiple drive devices, converts storage capacity from TB to GB, removes 'GB' suffix from RAM size, converts screen size values to float, cleans up the GPU column, removes entries with no sold date, and performs cleanup on the 'Model/Series' column.
+"""
 # # Data cleaning script to clean the scraped data 
+
+
 
 # ## Import libraries
 import re

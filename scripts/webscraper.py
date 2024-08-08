@@ -13,11 +13,24 @@ import time
 import random
 import cProfile
 import pandas.errors
+import json
 from tqdm import tqdm
 from requests.exceptions import RequestException
 
-# # Generate list of models to scrape for
 
+
+
+
+
+# # Webscraping cookie setup
+
+# Set url value.
+url = 'https://www.ebay.co.uk/sch/i.html?_fsrp=1&_from=R40&_nkw=laptop+computer&_sacat=0&_sop=12&LH_PrefLoc=2&_oaa=1&_dcat=177&LH_BIN=1&LH_Sold=1&LH_Complete=1&rt=nc&LH_ItemCondition=1500%7C2010%7C2020%7C2030%7C3000%7C1000'
+
+
+## Webscraping functions
+
+# Function to generate list of models to scrape for a given product type
 def generate_query_list(file_path, product_filter, exclude_manufacturer):
     # Read the CSV file into a Pandas DataFrame
     df = pd.read_csv(file_path)
@@ -48,74 +61,31 @@ def generate_query_list(file_path, product_filter, exclude_manufacturer):
 
     return query_list
 
+# Function to load cookies from a json file
+def load_cookies(file_path):
+    # Load cookies from json
+    with open(file_path) as f:
+        cookies = json.load(f)
 
-query_list = generate_query_list('csv//awb_db_complete21.03.2024.csv', 'LAPTOP', 'APPLE')
-print(query_list)
-print(len(query_list))
+    # Make a GET request to fetch the raw HTML content using the cookies provided in the dictionary above
+    html_content = requests.get(url, cookies=cookies)
 
+    for cookie in html_content.cookies:
 
+        print('cookie domain = ' + cookie.domain)
 
-# # Webscraping cookie setup
+        print('cookie name = ' + cookie.name)
 
-# Set url value.
-url = 'https://www.ebay.co.uk/sch/i.html?_fsrp=1&_from=R40&_nkw=laptop+computer&_sacat=0&_sop=12&LH_PrefLoc=2&_oaa=1&_dcat=177&LH_BIN=1&LH_Sold=1&LH_Complete=1&rt=nc&LH_ItemCondition=1500%7C2010%7C2020%7C2030%7C3000%7C1000'
+        print('cookie value = ' + cookie.value)
 
-cookies = {
-    'totp': '1697125603356.90peidWcYoDZkkiIV/3fQPUbez4knEK5zaQK03p58K21UHFdLYf13eU79KEw0e/xXMY23cm0G+4EyKIeJHpBHqN3/p7Sz0gmiGjCPxcY1IvJtwTTfc2yfbb5L+9/d3FM',
-    'bm_sv': 'EBC92348F7C4CB64863368F1DB5201BB~YAAQyKMQAnW1mRyLAQAADpmRJBWOVJlAigAJYqJqLk8LukHLPIkpgDKUUAJrGE+nTF2QvKPjcjayGT2dOmf2WTxCpHhOvKnHA/VovwOW39t6gLSTld0dB/+giuQBtcXM4d8exLXp6jVZSvw/gAA7eCZU8JhabIkTKTUvfAlW5v43lMT4giTl0MFTEPURxlydeNeEA6CFtumG9KbFo5Xv7QiEPQ7QFwSzaaecMqZoP/3b62TwWU/a1lum5QAnU5b2cg==~1',
-    'ns1': 'BAQAAAYpI47hYAAaAANgAU2cJSGM2MDFeMTY5NzEyNTYwMDg0Nl5eMF4yfDR8MTF8NDJ8MTB8NDN8MXw3fDV8M14xXjJeNF4zXjE1XjEyXjJeMV4xXjBeMV4wXjFeNjQ0MjQ1OTA3NdpDW+IZLtFUyjZpvkOet3oa/7U5',
-    'dp1': 'bu1p/QEBfX0BAX19AQA**68ea7be3^pbf/%23e000e0000000000000000067094863^bl/GB68ea7be3^',
-    'ebay': '%5Ejs%3D1%5Esbf%3D%23000000%5E',
-    '__uzmb': '1656403523',
-    '__uzmd': '1697125601',
-    '__uzma': '544f198b-f3e6-49ac-bf5f-e5d4a509b963',
-    '__deba': 'TWL253FqdkWxEAf7A0bfrOUP-GqX7rG8HAGY9Z4uqFZx340qiETF8YthJ-HE8YWSDDe27C3fHLYJM-njM4OZRLTOscjqbd46jI4T43IsHDXc0JyENwjH6YlmulQvW9CGKUi4mHNVsrcllXB2uy7dNg==',
-    'nonsession': 'BAQAAAYpI47hYAAaAAAgAHGVPoeMxNjc0NjM2OTU0eDExNTU3MjA3NDY2MngzeDJOADMABmcJSGNMUzMxQUEAygAgaOp74zkzMjY0NmRjMTgwMGFkYjkyNjQ1Nzc2NmZmZGUyZjVlAMsAAmUoG+s0MU0blIMzwV0GRDZjz0ShHXe1L+dh',
-    '__uzmf': '7f60005b580693-943d-4ec5-9beb-b94b579ec027165640352346340722077638-48c51b9d6ef587d4982',
-    'ak_bmsc': 'A552F161B4B05FDC6D81137862427FAA~000000000000000000000000000000~YAAQ0KMQAtZb2RuLAQAAbQhBJBWW8mdipJwIFRskhkFueYSuVo127yK8fakDe7H5GZq7F5+u4NP9dc3X2qtoyO8c5Q8w/JijKG8IT8pQuX37j3wuTLX3+947lRUzezUXEr+d56D4eDPXFjIrBLLlUJsr8OQcZc8Hs5E3F2OJgQH6u/NQgza2HETmGLrkyr17L7wYQQNMDeEql4aMfO9jDyyITiMv8snnoSpvN20YnWcQN5t8ny6MBeOP3o8rME4rr3Iq0gvlJdIXnwgd+Q8L7wVGWUn/wiy6WBeQiKTiJAbFzda3aXhMlZbNyw45mKsSKgnULsdmumjmSNa8HODiJqK+3II7Pe6QxB8Fpr9xmGGpZd4myv0MnHHz8LQh2gX8tWiNE+KYUSw0',
-    '__uzmc': '5445098220171',
-    's': 'CgADuANRlKVHDMwZodHRwczovL3d3dy5lYmF5LmNvLnVrL3NjaC9pLmh0bWw/X2ZzcnA9MSZfZnJvbT1SNDAmX25rdz1sYXB0b3AlMjBjb21wdXRlciZfc2FjYXQ9MCZMSF9QcmVmTG9jPTImX29hYT0xJl9kY2F0PTE3NyZMSF9CSU49MSZMSF9Tb2xkPTEmTEhfQ29tcGxldGU9MSZydD1uYyZMSF9JdGVtQ29uZGl0aW9uPTE1MDAlN0MyMDEwJTdDMjAyMCU3QzIwMzAlN0MzMDAwJTdDMTAwMAcA+AAgZSkxDjkzMjY0NmRjMTgwMGFkYjkyNjQ1Nzc2NmZmZGUyZjVlvEojAg**',
-    '__uzme': '2607'
-}
+        print('*************************************')
 
-# Make a GET request to fetch the raw HTML content using the cookies provided in the dictionary above
-html_content = requests.get(url, cookies=cookies)
+    html_content = requests.get(url, cookies=cookies).text
+    # Parse the html content
+    soup = BeautifulSoup(html_content, "lxml")
+    print(soup.prettify()) # print the parsed data of html
 
-for cookie in html_content.cookies:
-
-    print('cookie domain = ' + cookie.domain)
-
-    print('cookie name = ' + cookie.name)
-
-    print('cookie value = ' + cookie.value)
-
-    print('*************************************')
-
-html_content = requests.get(url, cookies=cookies).text
-# Parse the html content
-soup = BeautifulSoup(html_content, "lxml")
-print(soup.prettify()) # print the parsed data of html
-
-cookies = {
-    'totp': '1697125603356.90peidWcYoDZkkiIV/3fQPUbez4knEK5zaQK03p58K21UHFdLYf13eU79KEw0e/xXMY23cm0G+4EyKIeJHpBHqN3/p7Sz0gmiGjCPxcY1IvJtwTTfc2yfbb5L+9/d3FM',
-    'bm_sv': 'EBC92348F7C4CB64863368F1DB5201BB~YAAQyKMQAnW1mRyLAQAADpmRJBWOVJlAigAJYqJqLk8LukHLPIkpgDKUUAJrGE+nTF2QvKPjcjayGT2dOmf2WTxCpHhOvKnHA/VovwOW39t6gLSTld0dB/+giuQBtcXM4d8exLXp6jVZSvw/gAA7eCZU8JhabIkTKTUvfAlW5v43lMT4giTl0MFTEPURxlydeNeEA6CFtumG9KbFo5Xv7QiEPQ7QFwSzaaecMqZoP/3b62TwWU/a1lum5QAnU5b2cg==~1',
-    'ns1': 'BAQAAAYpI47hYAAaAANgAU2cJSGM2MDFeMTY5NzEyNTYwMDg0Nl5eMF4yfDR8MTF8NDJ8MTB8NDN8MXw3fDV8M14xXjJeNF4zXjE1XjEyXjJeMV4xXjBeMV4wXjFeNjQ0MjQ1OTA3NdpDW+IZLtFUyjZpvkOet3oa/7U5',
-    'dp1': 'bu1p/QEBfX0BAX19AQA**68ea7be3^pbf/%23e000e0000000000000000067094863^bl/GB68ea7be3^',
-    'ebay': '%5Ejs%3D1%5Esbf%3D%23000000%5E',
-    '__uzmb': '1656403523',
-    '__uzmd': '1697125601',
-    '__uzma': '544f198b-f3e6-49ac-bf5f-e5d4a509b963',
-    '__deba': 'TWL253FqdkWxEAf7A0bfrOUP-GqX7rG8HAGY9Z4uqFZx340qiETF8YthJ-HE8YWSDDe27C3fHLYJM-njM4OZRLTOscjqbd46jI4T43IsHDXc0JyENwjH6YlmulQvW9CGKUi4mHNVsrcllXB2uy7dNg==',
-    'nonsession': 'BAQAAAYpI47hYAAaAAAgAHGVPoeMxNjc0NjM2OTU0eDExNTU3MjA3NDY2MngzeDJOADMABmcJSGNMUzMxQUEAygAgaOp74zkzMjY0NmRjMTgwMGFkYjkyNjQ1Nzc2NmZmZGUyZjVlAMsAAmUoG+s0MU0blIMzwV0GRDZjz0ShHXe1L+dh',
-    '__uzmf': '7f60005b580693-943d-4ec5-9beb-b94b579ec027165640352346340722077638-48c51b9d6ef587d4982',
-    'ak_bmsc': 'A552F161B4B05FDC6D81137862427FAA~000000000000000000000000000000~YAAQ0KMQAtZb2RuLAQAAbQhBJBWW8mdipJwIFRskhkFueYSuVo127yK8fakDe7H5GZq7F5+u4NP9dc3X2qtoyO8c5Q8w/JijKG8IT8pQuX37j3wuTLX3+947lRUzezUXEr+d56D4eDPXFjIrBLLlUJsr8OQcZc8Hs5E3F2OJgQH6u/NQgza2HETmGLrkyr17L7wYQQNMDeEql4aMfO9jDyyITiMv8snnoSpvN20YnWcQN5t8ny6MBeOP3o8rME4rr3Iq0gvlJdIXnwgd+Q8L7wVGWUn/wiy6WBeQiKTiJAbFzda3aXhMlZbNyw45mKsSKgnULsdmumjmSNa8HODiJqK+3II7Pe6QxB8Fpr9xmGGpZd4myv0MnHHz8LQh2gX8tWiNE+KYUSw0',
-    '__uzmc': '5445098220171',
-    's': 'CgADuANRlKVHDMwZodHRwczovL3d3dy5lYmF5LmNvLnVrL3NjaC9pLmh0bWw/X2ZzcnA9MSZfZnJvbT1SNDAmX25rdz1sYXB0b3AlMjBjb21wdXRlciZfc2FjYXQ9MCZMSF9QcmVmTG9jPTImX29hYT0xJl9kY2F0PTE3NyZMSF9CSU49MSZMSF9Tb2xkPTEmTEhfQ29tcGxldGU9MSZydD1uYyZMSF9JdGVtQ29uZGl0aW9uPTE1MDAlN0MyMDEwJTdDMjAyMCU3QzIwMzAlN0MzMDAwJTdDMTAwMAcA+AAgZSkxDjkzMjY0NmRjMTgwMGFkYjkyNjQ1Nzc2NmZmZGUyZjVlvEojAg**',
-    '__uzme': '2607'
-}
-
-
-## Webscraping functions
+    return cookies
 
 # Function to get the BeautifulSoup object for a given URL
 def get_page(url):
@@ -181,13 +151,6 @@ def get_index_data(soup):
     urls = [item.get('href') for item in links]
     return urls
 
-# Function to write product data to a CSV file
-def write_csv(Prod_data, lnln):
-    with open('33EbayProduct.csv', 'a', encoding="utf-8") as csvfile:
-        writer = csv.writer(csvfile)
-        row = [Prod_data['Title'], Prod_data['Original_price'], Prod_data['OrgCurrency'], Prod_data['Starting_bid'], Prod_data['Currency'], Prod_data['Quantity_availability'], Prod_data['Condition'], lnln]
-        writer.writerow(row)
-
 # Function to extract specific data from a file
 def search_nested_classes(file, search_words, lnln):
     with open(file, encoding='utf-8') as f:
@@ -228,6 +191,7 @@ def search_nested_classes(file, search_words, lnln):
         #print(specifics)        
         return specifics
 
+# Function to extract the sold date and item number of a product
 def get_ID_sold_date(url, cookies, search):
     # Send a GET request to the URL
     response = requests.get(url, cookies=cookies)
@@ -265,16 +229,98 @@ def get_ID_sold_date(url, cookies, search):
     except:
         pass
     
+    # Check if folder exists, if not, create it
+    folder = 'csv/SoldDates'
+    if not os.path.exists(folder):
+        os.makedirs(folder)    
+
     # Write the DataFrame to a CSV file
     df.to_csv(f'csv/SoldDates/{search}_output_SoldDate.csv', index=False)
 
     return df
 
+# Function to load most recent csv file
+def load_most_recent_csv(folder_path):
+    # Get a list of all CSV files in the folder
+    csv_files = glob.glob(os.path.join(folder_path, '*.csv'))
+
+    # Get the most recent CSV file
+    most_recent_file = max(csv_files, key=os.path.getctime)
+
+    # Read the data from the most recent CSV file
+    df = pd.read_csv(most_recent_file)
+
+    # Lowercase the column names
+    df.columns = df.columns.str.lower()
+
+    # Lowercase all entries
+    df = df.applymap(lambda s:s.lower() if type(s) == str else s)
+
+    return df
+
+# Function to merge all csv files into one
+def merge_csv_files(folder_path, output_path):
+    os.chdir(folder_path)
+    all_filenames = [i for i in glob.glob('*.csv')]
+    if not all_filenames:
+        print("all_filenames is empty")
+        return
+    dataframes = []
+    for f in all_filenames:
+        if os.path.getsize(f) > 0:
+            try:
+                print(f"Reading file: {f}")
+                df = pd.read_csv(f, skiprows=1)
+                dataframes.append(df)
+            except pd.errors.EmptyDataError:
+                print(f"File {f} is empty. Skipping...")
+            except Exception as e:
+                print(f"An error occurred: {e}")
+                continue
+    if not dataframes:
+        print("dataframes is empty")
+        return
+    combined_csv = pd.concat(dataframes)
+    os.chdir("..")
+    os.makedirs('complete', exist_ok=True)
+    combined_csv.columns = ['sold_date', 'item_number']
+    combined_csv.to_csv(output_path, index=False, encoding='utf-8-sig')
+    return pd.read_csv(output_path)
+
+# Function to combine and align csv files
+def combine_and_align(folder_path, sold_dates_path):
+    df = load_most_recent_csv(folder_path)
+    sold_dates_combined = pd.read_csv(sold_dates_path)
+    sold_dates_combined = sold_dates_combined.dropna(how='all')
+    sold_dates_combined.rename(columns={'item_number': 'item number'}, inplace=True)
+    df2 = pd.merge(df, sold_dates_combined, on='item number', how='left')
+    duplicates = df2[df2.duplicated()]
+    print(f'The merged dataframe contains {len(duplicates)} duplicate rows.')
+    df2.drop_duplicates(inplace=True)
+    print(f'The cleaned dataframe contains {len(df2)} rows.')
+    missing_values = df2.isnull().sum()
+    print(missing_values)
+    # Check if folder exists, if not, create it
+    folder = 'dataset//update'
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    df2.to_csv(f"{folder}/update_pre_clean.csv", index=False)
+
+
+
+
 
 # Main function to scrape eBay product data
-def main(num_queries=None, num_results=None, num_products=None, randomize_queries=True, query_fraction=None):
+def main(query_list_source="source_csv//awbc.csv" , product_type="LAPTOP", exclude_brand="APPLE", num_queries=None, num_results=None, num_products=None, randomize_queries=True, query_fraction=None):
+
+    # Load cookies from a json file
+    cookies = load_cookies('credentials//cookies.json')
+
     # Start timer to measure the time taken to scrape the data
     start_time = time.time()
+
+    query_list = generate_query_list(query_list_source, product_type, exclude_brand)
+    print(len(query_list))
 
     # Initialize query list
     queries_to_scrape = query_list 
@@ -327,6 +373,10 @@ def main(num_queries=None, num_results=None, num_products=None, randomize_querie
 
                 # Save the HTML content of the product page to a file
                 filename = f'html_files/temp.html'
+                folder = os.path.dirname(filename)
+                # Check if the folder exists, if not, create it
+                if not os.path.exists(folder):
+                    os.makedirs(folder)
                 response = requests.get(lnln)
                 if response.ok:
                     with open(filename, 'w', encoding='utf-8') as f:
@@ -368,6 +418,12 @@ def main(num_queries=None, num_results=None, num_products=None, randomize_querie
                 cols.append(col)
         df = df[cols]
         
+
+        # Check if folder exists, if not, create it
+        folder = 'csv/ProductData'
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+
         # Write the DataFrame to a CSV file and display it
         df.to_csv(f'csv/ProductData/{search}_output_.csv', index=False)
         #display(df)
@@ -389,142 +445,14 @@ rows = []
 main()
 
 
-
-
-# ## Load csv to dataframe
-
-folder_path = 'csv//ProductData'
-
-# Get a list of all CSV files in the folder
-csv_files = glob.glob(os.path.join(folder_path, '*.csv'))
-
-# Get the most recent CSV file
-most_recent_file = max(csv_files, key=os.path.getctime)
-
-# Read the data from the most recent CSV file
-df = pd.read_csv(most_recent_file)
-
-# Lowercase the column names
-df.columns = df.columns.str.lower()
-
-# Lowercase all entries
-df = df.applymap(lambda s:s.lower() if type(s) == str else s)
-
+# Load csv to dataframe
+df = load_most_recent_csv('csv//ProductData')
 print(df)
 
-
-# ## Merge SoldDate csv files
-
-# Merge all csv files into one
-os.chdir("csv//SoldDates")
-extension = 'csv'
-all_filenames = [i for i in glob.glob('*.{}'.format(extension))]
-
-# Check if all_filenames is empty
-if not all_filenames:
-    print("all_filenames is empty")
-
-# Combine all files in the list
-dataframes = []  # List to store DataFrames
-for f in all_filenames:
-    if os.path.getsize(f) > 0:  # Check if file is not empty
-        try:
-            print(f"Reading file: {f}")  # Print file name
-            df = pd.read_csv(f, skiprows=1)  # Read file
-            dataframes.append(df)  # Append DataFrame to list
-        except pandas.errors.EmptyDataError:
-            print(f"File {f} is empty. Skipping...")
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            continue
-
-# Check if dataframes is empty
-if not dataframes:
-    print("dataframes is empty")
-else:
-    combined_csv = pd.concat(dataframes)  # Concatenate all DataFrames
-
-print(f"Current directory before: {os.getcwd()}")
-os.chdir("..")
-print(f"Current directory after: {os.getcwd()}")
-# Ensure the directory exists
-os.makedirs('complete', exist_ok=True)
-
-# Name columns
-combined_csv.columns = ['sold_date', 'item_number']
-
-#export to csv
-combined_csv.to_csv('temp//sold_dates_combined.csv', index=False, encoding='utf-8-sig')
-
-# Read the data from the CSV file
-sold_dates_combined = pd.read_csv('temp//sold_dates_combined.csv')
-
-# Remove empty rows
-sold_dates_combined = sold_dates_combined.dropna(how='all')
-
-# Display the updated DataFrame
+# Merge SoldDate csv files
+sold_dates_combined = merge_csv_files("csv//SoldDates", 'temp//sold_dates_combined.csv')
 print(sold_dates_combined)
 
-
-
-# ## Combine and align csv files
-
-# Align and add combined csv file to the main csv file, by Item Number
-
-# Read the data from the most recent CSV file
-# Set the path to the folder containing the CSV files
-folder_path = 'ProductData'
-
-print(f"Folder path: {folder_path}")
-
-# Get a list of all CSV files in the folder
-csv_files = glob.glob(os.path.join(folder_path, '*.csv'))
-
-print(f"CSV files: {csv_files}")
-
-# Get the most recent CSV file
-most_recent_file = max(csv_files, key=os.path.getctime)
-
-# Read the data from the most recent CSV file
-df = pd.read_csv(most_recent_file)
-
-# Lowercase the column names
-df.columns = df.columns.str.lower()
-
-# Lowercase all entries
-df = df.applymap(lambda s:s.lower() if type(s) == str else s)
-
-#  Rename item_number column to Item Number
-sold_dates_combined.rename(columns={'item_number': 'item number'}, inplace=True)
-
-# Merge the dataframes on the 'item number' column
-df2 = pd.merge(df, sold_dates_combined, on='item number', how='left')
-
-# Write the DataFrame to a CSV file and display it
-df2.to_csv(f'temp//AlignedComplete.csv', index=False)
-
-# Check for duplicate rows in the merged dataframe
-duplicates = df2[df2.duplicated()]
-
-# Print the number of duplicate rows
-print(f'The merged dataframe contains {len(duplicates)} duplicate rows.')
-
-# Remove duplicate rows from the merged dataframe
-df2.drop_duplicates(inplace=True)
-
-# Print the number of rows in the cleaned dataframe
-print(f'The cleaned dataframe contains {len(df2)} rows.')
-
-# Check for missing values in the merged dataframe
-missing_values = df2.isnull().sum()
-
-# Print the number of missing values for each column
-print(missing_values)
-
-# Change directory
-os.chdir("..")
-
-# Write the DataFrame to a CSV file and display it
-df2.to_csv(f'dataset//update//update_pre_clean.csv', index=False)
-
+# Combine and align csv files
+combine_and_align('ProductData', 'temp//sold_dates_combined.csv', 'dataset//update//update_pre_clean.csv')
 

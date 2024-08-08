@@ -1,0 +1,169 @@
+brand,model,status,average_price
+apple,xserve,scrap,121.94142857142857
+colfax,lwf1208yr915002,sell,949.99
+datto,s3p4000,sell,400.0
+dell,c6300,scrap,1440.0
+dell,c6320,scrap,499.0
+dell,dl120,sell,59.99
+dell,m520,scrap,59.0
+dell,m610,scrap,110.945
+dell,m620,scrap,112.39999999999999
+dell,m630,sell,176.65603773584905
+dell,m640,scrap,500.0
+dell,m710,scrap,19.0
+dell,m830,scrap,100.0
+dell,p2,scrap,24.0
+dell,poweredge m1000e,scrap,2306.6659999999997
+dell,poweredge m630,scrap,97.36363636363636
+dell,poweredge r330,scrap,137.3607894736842
+dell,poweredge r430,scrap,172.7435714285714
+dell,poweredge r530,scrap,226.9936363636364
+dell,poweredge r630,scrap,281.34444444444443
+dell,poweredge r730,scrap,360.85074626865674
+dell,poweredge t130,scrap,173.18548387096774
+dell,poweredge t20,scrap,48.17125
+dell,poweredge t330,scrap,169.9813888888889
+dell,poweredge t430,sell,256.945873015873
+dell,poweredge t630,scrap,688.710625
+dell,poweredge vrtx,scrap,130.0
+dell,r210,scrap,42.4675
+dell,r220,scrap,44.98
+dell,r230,sell,136.32833333333335
+dell,r240,sell,404.6566666666667
+dell,r250,sell,840.0
+dell,r310,scrap,53.11999999999999
+dell,r320,scrap,102.38176470588235
+dell,r330,sell,150.0
+dell,r340,sell,1200.0
+dell,r350,sell,1899.99
+dell,r420,scrap,87.52764705882353
+dell,r430,sell,185.71428571428572
+dell,r440,sell,595.99
+dell,r510,scrap,36.98428571428571
+dell,r520,scrap,79.0
+dell,r540,sell,635.992
+dell,r610,scrap,23.220000000000002
+dell,r620,scrap,117.49666666666667
+dell,r630,sell,228.17454545454547
+dell,r640,sell,671.866
+dell,r6515,scrap,999.99
+dell,r6525,scrap,3200.0
+dell,r710,scrap,185.43666666666664
+dell,r720,scrap,220.89578947368423
+dell,r730,sell,268.72241379310344
+dell,r740,sell,1397.6424
+dell,r7910,sell,202.22
+dell,t110,scrap,66.1690909090909
+dell,t130,sell,100.0
+dell,t140,sell,190.2738888888889
+dell,t150,sell,255.0
+dell,t30,sell,118.33142857142857
+dell,t310,scrap,114.5
+dell,t320,scrap,127.98081632653061
+dell,t330,sell,199.99
+dell,t340,sell,547.0
+dell,t40,sell,250.0
+dell,t410,scrap,50.0
+dell,t420,scrap,79.587
+dell,t430,sell,182.85714285714286
+dell,t440,sell,979.86
+dell,t550,sell,1199.99
+dell,t610,scrap,800.0
+dell,t620,scrap,391.825
+dell,t630,sell,477.14142857142855
+dell,t640,sell,1303.3266666666666
+dell,t710,scrap,25.99
+dell,x16,scrap,24.0
+dell,x3353,scrap,119.95
+dell,x3460,scrap,48.91
+dell,x4,scrap,600.0
+dell,x5,scrap,59.88
+dell,x5620,scrap,70.0
+dell,x5667,scrap,228.0
+dell,x5672,scrap,195.0
+dell,x8,scrap,35.995
+hp,bl2,scrap,25.2
+hp,bl420,scrap,100.79
+hp,bl460,sell,236.74500000000003
+hp,bl465,scrap,50.37
+hp,bl490,scrap,12.99
+hp,bl660,scrap,89.0
+hp,d1,scrap,199.95
+hp,d2200,scrap,79.99
+hp,d2220,scrap,165.0
+hp,dl160,sell,134.57416666666666
+hp,dl20,sell,124.86
+hp,dl320,scrap,82.26272727272728
+hp,dl360,sell,246.38065420560747
+hp,dl380,sell,249.64747368421055
+hp,dl560,scrap,1389.8
+hp,dl580,scrap,505.95666666666665
+hp,dl60,scrap,149.2757142857143
+hp,g1610,scrap,160.0
+hp,m6710,scrap,695.0
+hp,ml10,scrap,130.8025
+hp,ml110,scrap,145.084
+hp,ml150,scrap,122.644375
+hp,ml30,scrap,264.3183333333333
+hp,ml310,scrap,101.174
+hp,ml350,scrap,241.26068965517243
+hp,p44718,scrap,980.03
+hp,p54644,scrap,737.9
+hp,p9,scrap,160.9090909090909
+hp,proliant dl20 gen 9,sell,69.95
+hp,proliant dl360 gen 9,scrap,300.0
+hp,proliant dl380 gen10,scrap,1408.0395652173913
+hp,proliant dl380 gen9,sell,150.16145833333334
+hp,proliant dl380e gen 8,scrap,60.0
+hp,proliant ml350 gen 9,scrap,231.994
+hp,x146,scrap,220.0
+hp,x3,scrap,20.0
+hp,x3216,sell,239.99
+hp,x4,scrap,55.0
+ibm,power system s822,scrap,818.68
+ibm,ts2900,scrap,99.99
+ibm,x3550,scrap,64.854
+ibm,x3650,scrap,104.00307692307692
+ibm,x4,scrap,22.81
+ibm,x8,scrap,25.11
+lenovo,m82,scrap,37.99
+lenovo,p330,sell,178.99
+lenovo,system x 3550 m5,sell,185.47
+lenovo,system x3650 m3,scrap,109.0
+lenovo,t420,scrap,24.99
+lenovo,t470,scrap,99.99
+lenovo,thinksystem sr630,sell,212.07
+lenovo,ts460,sell,191.0
+lenovo,x16,scrap,43.2
+lenovo,x3550,scrap,74.5175
+lenovo,x3650,sell,305.5
+lenovo,x3750,scrap,76.3
+lenovo,x3850,scrap,840.0
+oracle,x4270,scrap,20.64
+quanta,d51b-2u,scrap,24.99
+quanta,d51pc-1u,scrap,86.69
+quanta,t41s-2u,sell,968.0
+quanta,t42,scrap,124.33333333333333
+quanta,x1,scrap,7.78
+supermicro,cse-113,scrap,149.99
+supermicro,cse-116,scrap,149.99
+supermicro,cse-118,scrap,780.0
+supermicro,cse-216,scrap,840.0
+supermicro,cse-418,scrap,519.7425000000001
+supermicro,cse-504,scrap,504.0
+supermicro,cse-512,scrap,89.99
+supermicro,cse-512-350,sell,95.0
+supermicro,cse-731,scrap,96.0
+supermicro,cse-811,scrap,44.95
+supermicro,cse-813,scrap,99.99
+supermicro,cse-813m,scrap,99.995
+supermicro,cse-815,scrap,212.8
+supermicro,cse-819u,sell,297.75
+supermicro,cse-825,scrap,236.02833333333334
+supermicro,cse-826,scrap,188.619375
+supermicro,cse-827,scrap,264.0
+supermicro,cse-829,sell,107.99
+supermicro,cse-836,scrap,189.99
+supermicro,cse-846,scrap,199.99
+supermicro,cse-847,scrap,939.995
+supermicro,cse826,scrap,30.15

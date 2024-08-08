@@ -1,4 +1,10 @@
-*.csv
 logs/
+_pycache_/
+debugging_html/
 dataset/
 models/
+outdated/
+csv/
+html_files/
+awbc.csv
+cookies.json

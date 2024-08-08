@@ -1,49 +1,28 @@
 import pandas as pd
-from datasetupdater import update_dataset
 
-file = 'dataset//base//base.csv'
-update = 'dataset//base//update_cleaned.csv'
+ent = pd.read_csv('source_csv//enterprise_inventory.csv')
+aiken = pd.read_csv('source_csv//products.csv')
 
-# Assuming df1, df, df3 are your dataframes
-df = pd.read_csv(file)
+print(ent.head())
+print(aiken.head())
 
-# print unique model entries
-print(df['model'].unique())
-
-# print unique screen size entries
-print(df['screen size'].unique())
+# Select only the columns we need
+ent = ent[['ProductType', 'Manufacturer', 'Model']]
 
 
-print(len(df))
+# Append one dataframe to another
+merged = aiken._append(ent, ignore_index=True)
 
+print(merged.head(200))
 
+print(merged['ProductType'].unique())
 
-df['screen size'] = df['screen size'].apply(lambda x: round(float(''.join(c for c in str(x) if c.isdigit() or c == '.')), 1) if ''.join(c for c in str(x) if c.isdigit() or c == '.') and '.' in str(x) and str(x)[-1] != '.' else ''.join(c for c in str(x) if c.isdigit()))
+# Lowercase all strings in the dataframe
 
-# Drop rows with missing screen size
-df = df.dropna(subset=['screen size'])
+merged = merged.apply(lambda x: x.str.lower() if x.dtype == "object" else x)
 
-df = df[df['screen size'] != '']
+print(merged.head(200))
 
-# Convert screen size to float
-df['screen size'] = df['screen size'].astype(float)
+# Save to csv
 
-# Drop entries with screen size less than 10
-df = df[df['screen size'] >= 10]
-
-
-
-# Model entry cleanup
-# if model contains the corresponding brand string from the same row, remove the brand string from the model entry
-df['model'] = df.apply(lambda row: row['model'].replace(row['brand'], '').strip() if isinstance(row['model'], str) else row['model'], axis=1)
-
-# Strip leading whitspace from model entries
-df['model'] = df['model'].str.lstrip()
-
-# print unique model entries
-#print(df['model'].unique())
-
-# print unique screen size entries
-#print(df['screen size'].unique())
-
-#df.to_csv(file, index=False)
+merged.to_csv('source_csv//merged_inventory.csv', index=False)
